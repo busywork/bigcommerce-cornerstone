@@ -65,13 +65,17 @@
            data-event-type="product-click"
         >
             <div class="card-img-container">
-                {{> components/common/responsive-img
-                    image=image
-                    class="card-image"
-                    fallback_size=theme_settings.productgallery_size
-                    lazyload=theme_settings.lazyload_mode
-                    default_image=theme_settings.default_image_product
-                }}
+                {{#if images.length '>' 1 }}
+                    <img class="card-image lazyload" data-src="{{getImage image 'productgallery_size' (cdn theme_settings.default_image_product)}}" onmouseover="this.src='{{getImage images.[1]}}'" onmouseout="this.src='{{getImage image}}'" alt="{{image.alt}}" title="{{image.alt}}">
+                {{else}}
+                    {{> components/common/responsive-img
+                        image=image
+                        class="card-image"
+                        fallback_size=theme_settings.productgallery_size
+                        lazyload=theme_settings.lazyload_mode
+                        default_image=theme_settings.default_image_product
+                    }}
+                {{/if}}
             </div>
         </a>
 
