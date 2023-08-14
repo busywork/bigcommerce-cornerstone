@@ -1,0 +1,18 @@
+.category-button-wrapper {
+  text-align: center;
+
+  .empty-button {
+    display: none;
+  }
+}
+
+.add-alert, .delete-alert {
+  display: none;
+
+  .closebtn {
+    font-weight: bold;
+    font-size: 22px;
+    cursor: pointer;
+  }
+}
+

@@ -4,6 +4,8 @@ import compareProducts from './global/compare-products';
 import FacetedSearch from './common/faceted-search';
 import { createTranslationDictionary } from '../theme/common/utils/translations-utils';
 
+const CART_API_URL = '/api/storefront/carts';
+
 export default class Category extends CatalogPage {
     constructor(context) {
         super(context);
@@ -27,6 +29,67 @@ export default class Category extends CatalogPage {
         $('a.navList-action').on('click', () => this.setLiveRegionAttributes($('span.price-filter-message'), 'status', 'assertive'));
     }
 
+    createCart(route, cartItems) {
+        return fetch(route, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify(cartItems),
+        })
+        .then(response => response.json())
+        .then(() => {
+            $('.add-alert').css('display', 'block');
+            $('.empty-button').css('display', 'inline');
+        })
+        .catch(error => console.error(error));
+    }
+
+    getCart(route) {
+        return fetch(route, {
+            method: "GET",
+            credentials: "same-origin"
+        })
+        .then(response => response.json())
+        .then(result => result)
+        .catch(error => console.error(error));
+    }
+
+    addCartItem(routeStart, cartId, cartItems) {
+        const route = routeStart + cartId + '/items';
+        return fetch(route, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify(cartItems),
+        })
+        .then(response => response.json())
+        .then(() => {
+            $('.add-alert').css('display', 'block');
+            $('.empty-button').css('display', 'inline');
+        })
+        .catch(error => console.error(error));
+    }
+
+    deleteCart(routeStart, cartId) {
+        const route = routeStart + cartId;
+        return fetch(route, {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json",
+        }
+        })
+        .then(() => {
+            $('.delete-alert').css('display', 'block');
+            $('.empty-button').css('display', 'none');
+        })
+        .catch(error => console.error(error));
+    }
+
     onReady() {
         this.arrangeFocusOnSortBy();
 
@@ -46,6 +109,29 @@ export default class Category extends CatalogPage {
         $('a.reset-btn').on('click', () => this.setLiveRegionsAttributes($('span.reset-message'), 'status', 'polite'));
 
         this.ariaNotifyNoProducts();
+
+        $('#addAllToCart').on('click', async () => {
+            const cart = await this.getCart(CART_API_URL);
+            const cartItems = {"lineItems": []};
+
+            for (let product of this.context.category.products) {
+                cartItems.lineItems.push({
+                    "quantity": 1,
+                    "productId" : product.id
+                });
+            }
+            cart.length ?  this.addCartItem(`${CART_API_URL}/`, cart[0].id, cartItems) : this.createCart(CART_API_URL, cartItems);
+        });
+
+        $('#emptyCart').on('click', async () => {
+            const cart = await this.getCart(CART_API_URL);
+            if (cart.length) {
+                this.deleteCart(`${CART_API_URL}/`, cart[0].id);
+            }
+        });
+
+        $('.add-alert .closebtn').on('click', () => $('.add-alert').css('display', 'none'));
+        $('.delete-alert .closebtn').on('click', () => $('.delete-alert').css('display', 'none'));
     }
 
     ariaNotifyNoProducts() {
