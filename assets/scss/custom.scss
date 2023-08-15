@@ -11,8 +11,21 @@
 
   .closebtn {
     font-weight: bold;
-    font-size: 22px;
+    font-size: 1.5rem;
     cursor: pointer;
+  }
+}
+
+.customer-details {
+  font-weight: bold;
+  font-size: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+
+  span {
+    font-weight: normal;
   }
 }
 

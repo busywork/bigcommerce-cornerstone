@@ -2,7 +2,7 @@
 category:
     shop_by_price: true
     products:
-        limit: {{theme_settings.categorypage_products_per_page}}
+        limit: {{theme_settings.categorypage_products_per_page}}    
 ---
 {{inject "categoryProductsPerPage" theme_settings.categorypage_products_per_page}}
 {{inject "category" category}}
@@ -16,6 +16,27 @@ category:
 {{/partial}}
 
 {{#partial "page"}}
+
+{{#if customer}}
+    <div class="customer-details">
+        <div>
+            Welcome back, <span>{{customer.name}}</span>
+        </div>
+        <div>
+            E: <span>{{customer.email}}</span>
+        </div>
+        {{#if customer.phone}}
+            <div>
+                P: <span>{{customer.phone}}</span>
+            </div>
+        {{/if}}
+        {{#if customer.customer_group_name}}
+            <div>
+                Group: <span>{{customer.customer_group_name}}</span>
+            </div>
+        {{/if}}
+    </div>
+{{/if}}
 
 <div class="add-alert">
     <div class="alertBox alertBox--success">
